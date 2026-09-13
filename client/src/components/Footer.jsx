@@ -42,7 +42,7 @@ function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <span>© 2026 GameVerse. All rights reserved.</span>
+        <span>© 2026 GameVerse · Developed by Milan</span>
         <span>Built with React · Node.js · MongoDB</span>
       </div>
 
