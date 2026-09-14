@@ -182,3 +182,80 @@
     border-right-color: var(--border);
   }
 }
+
+
+.admin-review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-review-card {
+  padding: 22px 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.admin-review-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.admin-review-user {
+  color: var(--gold);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.admin-review-card h2 {
+  margin: 7px 0 0;
+  color: var(--text);
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 25px;
+  letter-spacing: 0.03em;
+}
+
+.admin-review-rating {
+  margin-top: 15px;
+  color: var(--gold);
+  font-size: 18px;
+  letter-spacing: 3px;
+}
+
+.admin-review-comment {
+  margin: 12px 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.admin-review-date {
+  color: var(--text-muted);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+}
+
+.admin-delete-button {
+  padding: 9px 14px;
+  border: 1px solid #7d3434;
+  border-radius: 5px;
+  background: transparent;
+  color: #ff6b6b;
+  cursor: pointer;
+}
+
+.admin-delete-button:hover {
+  background: #7d3434;
+  color: white;
+}
+
+@media (max-width: 600px) {
+  .admin-review-top {
+    flex-direction: column;
+  }
+}

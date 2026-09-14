@@ -93,6 +93,42 @@ router.delete("/users/:id", adminOnly, async (req, res) => {
   }
 });
 
+router.get("/reviews", adminOnly, async (req, res) => {
+  try {
+    const reviews = await Review.find()
+      .sort({ createdAt: -1 });
+
+    res.json(reviews);
+  } catch (error) {
+    res.status(500).json({
+      message: "Unable to fetch reviews.",
+      error: error.message,
+    });
+  }
+});
+
+router.delete("/reviews/:id", adminOnly, async (req, res) => {
+  try {
+    const review = await Review.findById(req.params.id);
+
+    if (!review) {
+      return res.status(404).json({
+        message: "Review not found.",
+      });
+    }
+
+    await Review.findByIdAndDelete(req.params.id);
+
+    res.json({
+      message: "Review deleted successfully.",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Unable to delete review.",
+      error: error.message,
+    });
+  }
+});
 
 
 module.exports = router;
