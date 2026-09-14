@@ -39,6 +39,7 @@ function Categories() {
   return (
     <div className="categories-page">
 
+      {/* HEADER */}
       <div className="categories-header">
 
         <div className="eyebrow-line">
@@ -55,9 +56,12 @@ function Categories() {
 
       </div>
 
+
+      {/* CATEGORY GRID */}
       <div className="categories-grid">
 
         {categories.map((category, index) => (
+
           <Link
             key={category.name}
             to={`/categories/${category.name.toLowerCase()}`}
@@ -73,10 +77,14 @@ function Categories() {
 
               <div className="category-overlay"></div>
 
+
+              {/* CATEGORY NAME */}
               <div className="category-label">
-                {category.name}
+                <span>{category.name}</span>
               </div>
 
+
+              {/* NUMBER */}
               <div className="category-number">
                 {String(index + 1).padStart(2, "0")}
               </div>
@@ -84,6 +92,7 @@ function Categories() {
             </div>
 
           </Link>
+
         ))}
 
       </div>

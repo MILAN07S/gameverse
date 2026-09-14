@@ -3297,3 +3297,284 @@ a:focus-visible {
   height: 100%;
   object-fit: cover;
 }
+
+/* =========================================================
+   ADMIN REVIEWS TABLE - FINAL
+========================================================= */
+
+.admin-reviews-table-wrapper {
+  width: 100%;
+  margin-top: 30px;
+  overflow-x: auto;
+
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.admin-reviews-table {
+  width: 100%;
+  min-width: 950px;
+
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* COLUMN WIDTHS */
+
+.admin-reviews-table th:nth-child(1),
+.admin-reviews-table td:nth-child(1) {
+  width: 13%;
+}
+
+.admin-reviews-table th:nth-child(2),
+.admin-reviews-table td:nth-child(2) {
+  width: 22%;
+}
+
+.admin-reviews-table th:nth-child(3),
+.admin-reviews-table td:nth-child(3) {
+  width: 13%;
+}
+
+.admin-reviews-table th:nth-child(4),
+.admin-reviews-table td:nth-child(4) {
+  width: 27%;
+}
+
+.admin-reviews-table th:nth-child(5),
+.admin-reviews-table td:nth-child(5) {
+  width: 13%;
+}
+
+.admin-reviews-table th:nth-child(6),
+.admin-reviews-table td:nth-child(6) {
+  width: 12%;
+}
+
+/* HEADER */
+
+.admin-reviews-table thead {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.admin-reviews-table th {
+  height: 52px;
+
+  padding: 0 22px;
+
+  text-align: left;
+  vertical-align: middle;
+
+  border-bottom: 1px solid var(--line);
+
+  color: var(--gold);
+
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 600;
+
+  letter-spacing: 0.1em;
+
+  white-space: nowrap;
+}
+
+/* ROW */
+
+.admin-reviews-table tbody tr {
+  height: 105px;
+
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-reviews-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* CELLS */
+
+.admin-reviews-table td {
+  padding: 20px 22px;
+
+  text-align: left;
+  vertical-align: middle;
+
+  border-bottom: 1px solid var(--line);
+
+  box-sizing: border-box;
+}
+
+.admin-reviews-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* USER */
+
+.admin-review-user-cell {
+  color: var(--text);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+/* GAME */
+
+.admin-review-game-cell {
+  color: var(--text);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  line-height: 1.4;
+
+  overflow-wrap: break-word;
+}
+
+/* RATING */
+
+.admin-review-rating-cell {
+  color: var(--gold);
+
+  font-size: 15px;
+  letter-spacing: 2px;
+
+  white-space: nowrap;
+}
+
+/* REVIEW */
+
+.admin-review-comment-cell {
+  color: var(--text-muted);
+
+  font-size: 12px;
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+/* DATE */
+
+.admin-review-date-cell {
+  color: var(--text-muted);
+
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+
+  white-space: nowrap;
+}
+
+/* ACTIONS */
+
+.admin-review-actions-cell {
+  width: 100%;
+
+  text-align: left;
+
+  white-space: nowrap;
+}
+
+/* DELETE BUTTON */
+
+.admin-review-delete {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: auto;
+  min-width: 60px;
+
+  padding: 7px 12px;
+  margin: 0;
+
+  background: transparent;
+
+  border: 1px solid #7a3340;
+  border-radius: 6px;
+
+  color: #ff6b78;
+
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.admin-review-delete:hover {
+  background: #7a3340;
+
+  border-color: #7a3340;
+
+  color: white;
+}
+
+/* ERROR */
+
+.admin-error {
+  margin-top: 20px;
+
+  padding: 14px 16px;
+
+  border: 1px solid #7a3340;
+  border-radius: var(--radius);
+
+  background: rgba(122, 51, 64, 0.08);
+
+  color: #ff6b78;
+
+  font-size: 13px;
+}
+
+/* EMPTY */
+
+.admin-empty {
+  margin-top: 30px;
+
+  padding: 40px;
+
+  background: var(--surface);
+
+  border: 1px solid var(--line);
+
+  border-radius: var(--radius);
+}
+
+.admin-empty h2 {
+  margin: 0 0 8px;
+
+  color: var(--text);
+
+  font-family: "Bebas Neue", sans-serif;
+
+  font-size: 28px;
+}
+
+.admin-empty p {
+  margin: 0;
+
+  color: var(--text-muted);
+
+  font-size: 13px;
+}
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+  .admin-reviews-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .admin-reviews-table {
+    min-width: 950px;
+  }
+}

@@ -8,6 +8,7 @@ import AdminRoute from "./components/AdminRoute";
 import AdminGames from "./pages/Admin/AdminGames";
 import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminReviews from "./pages/Admin/AdminReviews";
+import AdminCategories from "./pages/Admin/AdminCategories";
 
 import {
   BrowserRouter,
@@ -95,6 +96,11 @@ function App() {
         <Route
           path="/admin/reviews"
           element={<AdminReviews />}
+        />
+
+        <Route
+          path="/admin/categories"
+          element={<AdminCategories />}
         />
 
       </Routes>
