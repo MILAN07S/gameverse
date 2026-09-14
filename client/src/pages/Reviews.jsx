@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import games from "../data/games";
+
 import API from "../services/api";
 
 const demoReviews = [
@@ -98,6 +98,7 @@ function Reviews() {
     const [showForm, setShowForm] = useState(false);
 
     const [reviews, setReviews] = useState([]);
+    const [games, setGames] = useState([]);
 
     const [selectedGame, setSelectedGame] = useState("");
     const [rating, setRating] = useState(0);
@@ -127,6 +128,19 @@ function Reviews() {
         fetchReviews();
     }, []);
 
+    useEffect(() => {
+        const fetchGames = async () => {
+            try {
+                const response = await API.get("/games");
+                setGames(response.data);
+            } catch (error) {
+                console.log("Error fetching games:", error);
+            }
+        };
+
+        fetchGames();
+    }, []);
+
     // Calculate average rating
     const averageRating =
         reviews.length > 0
@@ -154,7 +168,7 @@ function Reviews() {
         }
 
         const game = games.find(
-            (item) => item.id === Number(selectedGame)
+            (item) => item.gameId === Number(selectedGame)
         );
 
         if (!game) {
@@ -169,7 +183,7 @@ function Reviews() {
             const response = await API.post(
                 "/reviews",
                 {
-                    gameId: game.id,
+                    gameId: game.gameId,
                     gameName: game.name,
                     rating,
                     comment: comment.trim(),
@@ -437,8 +451,8 @@ function Reviews() {
 
                                 {games.map((game) => (
                                     <option
-                                        key={game.id}
-                                        value={game.id}
+                                        key={game.gameId}
+                                        value={game.gameId}
                                     >
                                         {game.name}
                                     </option>

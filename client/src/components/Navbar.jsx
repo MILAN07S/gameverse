@@ -1,13 +1,42 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import games from "../data/games";
+import { useEffect, useState } from "react";
+import API from "../services/api";
 
 function Navbar() {
     const [search, setSearch] = useState("");
+    const [games, setGames] = useState([]);
+
     const navigate = useNavigate();
 
     const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem("user"));
+
+    let user = null;
+
+    try {
+        user = JSON.parse(
+            localStorage.getItem("user")
+        );
+    } catch {
+        user = null;
+    }
+
+    useEffect(() => {
+        const fetchGames = async () => {
+            try {
+                const response =
+                    await API.get("/games");
+
+                setGames(response.data);
+            } catch (error) {
+                console.log(
+                    "Navbar games error:",
+                    error
+                );
+            }
+        };
+
+        fetchGames();
+    }, []);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -16,77 +45,137 @@ function Navbar() {
         navigate("/signin");
     };
 
+    const searchResults = games.filter(
+        (game) =>
+            game.name
+                ?.toLowerCase()
+                .includes(search.toLowerCase()) ||
+            game.company
+                ?.toLowerCase()
+                .includes(search.toLowerCase()) ||
+            game.genre
+                ?.toLowerCase()
+                .includes(search.toLowerCase())
+    );
+
     return (
         <nav className="navbar">
+
             <div className="navbar-inner">
 
-                <Link to="/" className="logo">
-                    <div className="logo-mark">GV</div>
-                    <div className="logo-text">GAMEVERSE</div>
+                <Link
+                    to="/"
+                    className="logo"
+                >
+                    <div className="logo-mark">
+                        GV
+                    </div>
+
+                    <div className="logo-text">
+                        GAMEVERSE
+                    </div>
                 </Link>
+
 
                 <div className="nav-links">
 
-                    <Link to="/">Home</Link>
+                    <Link to="/">
+                        Home
+                    </Link>
 
-                    <Link to="/games">Games</Link>
+                    <Link to="/games">
+                        Games
+                    </Link>
 
-                    <Link to="/categories">Categories</Link>
+                    <Link to="/categories">
+                        Categories
+                    </Link>
 
-                    <Link to="/reviews">Reviews</Link>
+                    <Link to="/reviews">
+                        Reviews
+                    </Link>
 
                 </div>
+
+
                 <div className="search-wrap">
+
                     <input
                         type="text"
                         className="search-input"
                         placeholder="Search the catalog..."
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={(e) =>
+                            setSearch(e.target.value)
+                        }
                     />
+
+
                     {search && (
+
                         <div className="search-results">
-                            {games
-                                .filter((game) =>
-                                    game.name.toLowerCase().includes(search.toLowerCase()) ||
-                                    game.company.toLowerCase().includes(search.toLowerCase()) ||
-                                    game.genre.toLowerCase().includes(search.toLowerCase())
-                                )
-                                .map((game) => (
+
+                            {searchResults.map(
+                                (game) => (
+
                                     <Link
-                                        key={game.id}
-                                        to={`/game/${game.id}`}
+                                        key={game._id}
+                                        to={`/game/${game.gameId}`}
                                         className="search-result"
-                                        onClick={() => setSearch("")}
+                                        onClick={() =>
+                                            setSearch("")
+                                        }
                                     >
-                                        <img src={game.image} alt={game.name} />
+
+                                        <img
+                                            src={game.image}
+                                            alt={game.name}
+                                        />
 
                                         <div>
-                                            <strong>{game.name}</strong>
-                                            <span>{game.company}</span>
-                                        </div>
-                                    </Link>
-                                ))}
 
-                            {games.filter((game) =>
-                                game.name.toLowerCase().includes(search.toLowerCase()) ||
-                                game.company.toLowerCase().includes(search.toLowerCase()) ||
-                                game.genre.toLowerCase().includes(search.toLowerCase())
-                            ).length === 0 && (
-                                    <div className="no-search-result">
-                                        No games found
-                                    </div>
-                                )}
+                                            <strong>
+                                                {game.name}
+                                            </strong>
+
+                                            <span>
+                                                {game.company}
+                                            </span>
+
+                                        </div>
+
+                                    </Link>
+
+                                )
+                            )}
+
+
+                            {searchResults.length === 0 && (
+
+                                <div className="no-search-result">
+                                    No games found
+                                </div>
+
+                            )}
+
                         </div>
+
                     )}
+
                 </div>
+
 
                 <div className="nav-actions">
 
                     {token && user ? (
+
                         <>
+
                             <div className="user-chip">
-                                Signed in as <strong>{user.name}</strong>
+                                Signed in as{" "}
+                                <strong>
+                                    {user.name}
+                                </strong>
                             </div>
 
                             <button
@@ -95,9 +184,13 @@ function Navbar() {
                             >
                                 Log out
                             </button>
+
                         </>
+
                     ) : (
+
                         <>
+
                             <Link
                                 to="/signin"
                                 className="btn btn-ghost"
@@ -111,14 +204,17 @@ function Navbar() {
                             >
                                 Sign up
                             </Link>
+
                         </>
+
                     )}
 
                 </div>
 
             </div>
+
         </nav>
     );
 }
 
-export default Navbar; 
+export default Navbar;

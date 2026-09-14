@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import API from "../../services/api";
 
 function AdminUsers() {
@@ -41,7 +42,9 @@ function AdminUsers() {
       "Are you sure you want to delete this user?"
     );
 
-    if (!confirmDelete) return;
+    if (!confirmDelete) {
+      return;
+    }
 
     try {
       const token = localStorage.getItem("token");
@@ -53,10 +56,13 @@ function AdminUsers() {
       });
 
       setUsers((current) =>
-        current.filter((user) => user._id !== id)
+        current.filter(
+          (user) => user._id !== id
+        )
       );
 
       alert("User deleted successfully.");
+
     } catch (error) {
       console.log("Error deleting user:", error);
 
@@ -70,13 +76,30 @@ function AdminUsers() {
   return (
     <div className="admin-page">
 
+      {/* BACK BUTTON */}
+
+      <Link
+        to="/admin"
+        className="admin-back-button"
+      >
+        ← Back
+      </Link>
+
+
+      {/* HEADER */}
+
       <div className="admin-header">
 
         <div>
 
           <div className="eyebrow-line">
+
             <div className="dash"></div>
-            <span>USER MANAGEMENT</span>
+
+            <span>
+              USER MANAGEMENT
+            </span>
+
           </div>
 
           <h1>USERS</h1>
@@ -89,26 +112,51 @@ function AdminUsers() {
 
       </div>
 
+
+      {/* ERROR */}
+
       {error && (
         <div className="admin-error">
           {error}
         </div>
       )}
 
+
+      {/* LOADING */}
+
       {loading && (
-        <p>Loading users...</p>
+        <p>
+          Loading users...
+        </p>
       )}
 
-      {!loading && !error && users.length === 0 && (
+
+      {/* EMPTY */}
+
+      {!loading &&
+        !error &&
+        users.length === 0 && (
+
         <div className="admin-empty">
-          <h2>NO USERS YET</h2>
+
+          <h2>
+            NO USERS YET
+          </h2>
+
           <p>
             No registered users found.
           </p>
+
         </div>
       )}
 
-      {!loading && users.length > 0 && (
+
+      {/* USERS */}
+
+      {!loading &&
+        !error &&
+        users.length > 0 && (
+
         <div className="admin-table">
 
           <div className="admin-table-header">
@@ -121,13 +169,16 @@ function AdminUsers() {
 
           </div>
 
+
           {users.map((user) => {
 
-            const isCurrentUser =
-              user._id ===
+            const currentUser =
               JSON.parse(
-                localStorage.getItem("user")
-              )?.id;
+                localStorage.getItem("user") || "null"
+              );
+
+            const isCurrentUser =
+              user._id === currentUser?.id;
 
             return (
               <div
@@ -136,18 +187,23 @@ function AdminUsers() {
               >
 
                 <div className="admin-game-name">
+
                   <strong>
                     {user.name}
                   </strong>
+
                 </div>
+
 
                 <span>
                   {user.email}
                 </span>
 
+
                 <span>
                   {user.role || "user"}
                 </span>
+
 
                 <span>
                   {user.createdAt
@@ -157,13 +213,17 @@ function AdminUsers() {
                     : "N/A"}
                 </span>
 
+
                 <div className="admin-actions">
 
                   {isCurrentUser ? (
+
                     <span className="admin-current-user">
                       YOU
                     </span>
+
                   ) : (
+
                     <button
                       type="button"
                       className="admin-delete-button"
@@ -173,6 +233,7 @@ function AdminUsers() {
                     >
                       Delete
                     </button>
+
                   )}
 
                 </div>

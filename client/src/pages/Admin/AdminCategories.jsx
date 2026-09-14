@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import API from "../../services/api";
 
 function AdminCategories() {
@@ -13,9 +14,9 @@ function AdminCategories() {
 
   const [error, setError] = useState("");
 
-  /* ================================
-     LOAD CATEGORIES
-  ================================= */
+  // ================================
+  // LOAD CATEGORIES
+  // ================================
 
   const fetchCategories = async () => {
     try {
@@ -33,7 +34,6 @@ function AdminCategories() {
       setCategories(response.data);
     } catch (error) {
       console.log("Error loading categories:", error);
-
       setError("Unable to load categories.");
     } finally {
       setLoading(false);
@@ -44,10 +44,9 @@ function AdminCategories() {
     fetchCategories();
   }, []);
 
-
-  /* ================================
-     RESET FORM
-  ================================= */
+  // ================================
+  // RESET FORM
+  // ================================
 
   const resetForm = () => {
     setName("");
@@ -57,10 +56,9 @@ function AdminCategories() {
     setError("");
   };
 
-
-  /* ================================
-     OPEN ADD FORM
-  ================================= */
+  // ================================
+  // ADD
+  // ================================
 
   const handleAdd = () => {
     setEditingCategory(null);
@@ -70,25 +68,21 @@ function AdminCategories() {
     setShowForm(true);
   };
 
-
-  /* ================================
-     OPEN EDIT FORM
-  ================================= */
+  // ================================
+  // EDIT
+  // ================================
 
   const handleEdit = (category) => {
     setEditingCategory(category);
-
     setName(category.name);
     setImage(category.image);
-
     setError("");
     setShowForm(true);
   };
 
-
-  /* ================================
-     IMAGE SELECT
-  ================================= */
+  // ================================
+  // IMAGE
+  // ================================
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -106,10 +100,9 @@ function AdminCategories() {
     reader.readAsDataURL(file);
   };
 
-
-  /* ================================
-     ADD / UPDATE
-  ================================= */
+  // ================================
+  // ADD / UPDATE
+  // ================================
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -134,11 +127,7 @@ function AdminCategories() {
         image,
       };
 
-
-      /* EDIT */
-
       if (editingCategory) {
-
         const response = await API.put(
           `/admin/categories/${editingCategory._id}`,
           categoryData,
@@ -156,14 +145,7 @@ function AdminCategories() {
               : category
           )
         );
-
-      }
-
-
-      /* ADD */
-
-      else {
-
+      } else {
         const response = await API.post(
           "/admin/categories",
           categoryData,
@@ -178,11 +160,9 @@ function AdminCategories() {
           ...currentCategories,
           response.data.category,
         ]);
-
       }
 
       resetForm();
-
     } catch (error) {
       console.log("Error saving category:", error);
 
@@ -193,10 +173,9 @@ function AdminCategories() {
     }
   };
 
-
-  /* ================================
-     DELETE
-  ================================= */
+  // ================================
+  // DELETE
+  // ================================
 
   const handleDelete = async (category) => {
     const confirmed = window.confirm(
@@ -224,7 +203,6 @@ function AdminCategories() {
           (item) => item._id !== category._id
         )
       );
-
     } catch (error) {
       console.log("Error deleting category:", error);
 
@@ -235,50 +213,22 @@ function AdminCategories() {
     }
   };
 
-
-  /* ================================
-     LOADING
-  ================================= */
-
-  if (loading) {
-    return (
-      <div className="admin-page">
-
-        <div className="admin-header">
-
-          <div>
-
-            <div className="eyebrow-line">
-              <div className="dash"></div>
-
-              <span>
-                CATEGORY MANAGEMENT
-              </span>
-            </div>
-
-            <h1>CATEGORIES</h1>
-
-            <p>
-              Manage game categories on GameVerse.
-            </p>
-
-          </div>
-
-        </div>
-
-        <p>Loading categories...</p>
-
-      </div>
-    );
-  }
-
-
-  /* ================================
-     PAGE
-  ================================= */
+  // ================================
+  // PAGE
+  // ================================
 
   return (
     <div className="admin-page">
+
+      {/* BACK BUTTON */}
+
+      <Link
+        to="/admin"
+        className="admin-back-button"
+      >
+        ← Back
+      </Link>
+
 
       {/* HEADER */}
 
@@ -303,20 +253,31 @@ function AdminCategories() {
         </div>
 
 
-        <button
-          type="button"
-          className="admin-add-button"
-          onClick={handleAdd}
-        >
-          + ADD CATEGORY
-        </button>
+        {!loading && (
+          <button
+            type="button"
+            className="admin-add-button"
+            onClick={handleAdd}
+          >
+            + ADD CATEGORY
+          </button>
+        )}
 
       </div>
 
 
+      {/* LOADING */}
+
+      {loading && (
+        <p>
+          Loading categories...
+        </p>
+      )}
+
+
       {/* ERROR */}
 
-      {error && !showForm && (
+      {!loading && error && !showForm && (
         <div className="admin-error">
           {error}
         </div>
@@ -325,7 +286,7 @@ function AdminCategories() {
 
       {/* FORM */}
 
-      {showForm && (
+      {!loading && showForm && (
 
         <div className="admin-form-card">
 
@@ -366,8 +327,6 @@ function AdminCategories() {
             onSubmit={handleSubmit}
           >
 
-            {/* NAME */}
-
             <div className="admin-form-field">
 
               <label>
@@ -386,8 +345,6 @@ function AdminCategories() {
             </div>
 
 
-            {/* IMAGE */}
-
             <div className="admin-form-field">
 
               <label>
@@ -402,8 +359,6 @@ function AdminCategories() {
 
             </div>
 
-
-            {/* PREVIEW */}
 
             {image && (
 
@@ -422,8 +377,6 @@ function AdminCategories() {
 
             )}
 
-
-            {/* BUTTONS */}
 
             <div className="admin-form-actions">
 
@@ -452,9 +405,12 @@ function AdminCategories() {
       )}
 
 
-      {/* CATEGORY LIST */}
+      {/* EMPTY */}
 
-      {!showForm && categories.length === 0 && (
+      {!loading &&
+        !showForm &&
+        !error &&
+        categories.length === 0 && (
 
         <div className="admin-empty">
 
@@ -475,11 +431,15 @@ function AdminCategories() {
           </button>
 
         </div>
-
       )}
 
 
-      {!showForm && categories.length > 0 && (
+      {/* CATEGORY GRID */}
+
+      {!loading &&
+        !showForm &&
+        !error &&
+        categories.length > 0 && (
 
         <div className="admin-category-grid">
 
@@ -489,8 +449,6 @@ function AdminCategories() {
               className="admin-category-card"
               key={category._id}
             >
-
-              {/* IMAGE */}
 
               <div className="admin-category-image">
 
@@ -506,14 +464,11 @@ function AdminCategories() {
               </div>
 
 
-              {/* CONTENT */}
-
               <div className="admin-category-content">
 
                 <h2>
                   {category.name}
                 </h2>
-
 
                 <div className="admin-category-actions">
 
@@ -546,7 +501,6 @@ function AdminCategories() {
           ))}
 
         </div>
-
       )}
 
     </div>

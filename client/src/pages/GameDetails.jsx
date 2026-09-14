@@ -1,37 +1,112 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import games from "../data/games";
+import API from "../services/api";
 
 function GameDetails() {
     const { id } = useParams();
 
-    const game = games.find(
-        (item) => item.id === Number(id)
-    );
-
+    const [game, setGame] = useState(null);
     const [currentPreview, setCurrentPreview] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-    // If game doesn't exist
-    if (!game) {
+    // ==========================================
+    // LOAD GAME FROM MONGODB
+    // ==========================================
+
+    useEffect(() => {
+        const fetchGame = async () => {
+            try {
+                setLoading(true);
+                setError("");
+
+                const response = await API.get(`/games/${id}`);
+
+                setGame(response.data);
+                setCurrentPreview(0);
+
+            } catch (error) {
+                console.log("Error loading game:", error);
+
+                setError(
+                    error.response?.data?.message ||
+                    "Unable to load game."
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchGame();
+    }, [id]);
+
+
+    // ==========================================
+    // LOADING
+    // ==========================================
+
+    if (loading) {
         return (
             <div className="not-found">
-                <h1>Game Not Found</h1>
-
-                <Link to="/" className="back-button">
-                    ← Back to catalog
-                </Link>
+                <h1>LOADING GAME...</h1>
+                <p>Please wait...</p>
             </div>
         );
     }
 
-    // Preview images
-    const previews = game.previews || [];
 
-    // Preview descriptions
-    const previewTitles = game.preview || [];
+    // ==========================================
+    // ERROR
+    // ==========================================
 
-    // Next preview
+    if (error || !game) {
+        return (
+            <div className="not-found">
+
+                <h1>GAME NOT FOUND</h1>
+
+                <p>
+                    {error || "Unable to load game."}
+                </p>
+
+                <Link
+                    to="/games"
+                    className="back-button"
+                >
+                    ← Back to Games
+                </Link>
+
+            </div>
+        );
+    }
+
+
+    // ==========================================
+    // PREVIEWS
+    // ==========================================
+
+    const previews =
+        Array.isArray(game.previews)
+            ? game.previews
+            : Array.isArray(game.preview)
+                ? game.preview
+                : [];
+
+    const previewTitles =
+        Array.isArray(game.preview)
+            ? game.preview
+            : [];
+
+
+    // ==========================================
+    // NEXT PREVIEW
+    // ==========================================
+
     const nextPreview = () => {
+        if (previews.length <= 1) {
+            return;
+        }
+
         setCurrentPreview((current) =>
             current === previews.length - 1
                 ? 0
@@ -39,8 +114,16 @@ function GameDetails() {
         );
     };
 
-    // Previous preview
+
+    // ==========================================
+    // PREVIOUS PREVIEW
+    // ==========================================
+
     const previousPreview = () => {
+        if (previews.length <= 1) {
+            return;
+        }
+
         setCurrentPreview((current) =>
             current === 0
                 ? previews.length - 1
@@ -48,35 +131,36 @@ function GameDetails() {
         );
     };
 
+
     return (
         <div className="details-container">
 
-            {/* =========================
-                Back Button
-            ========================= */}
+            {/* =====================================
+                BACK BUTTON
+            ===================================== */}
 
             <div className="detail-top">
 
                 <Link
-                    to="/"
+                    to="/games"
                     className="back-button"
                 >
-                    ← Back to catalog
+                    ← Back to Games
                 </Link>
 
             </div>
 
 
-            {/* =========================
-                Main Game Details
-            ========================= */}
+            {/* =====================================
+                MAIN DETAIL GRID
+            ===================================== */}
 
             <div className="detail-grid">
 
 
-                {/* =========================
-                    Game Poster
-                ========================= */}
+                {/* =================================
+                    LEFT — GAME POSTER
+                ================================= */}
 
                 <div className="detail-poster">
 
@@ -92,14 +176,16 @@ function GameDetails() {
                 </div>
 
 
-                {/* =========================
-                    Game Information
-                ========================= */}
+                {/* =================================
+                    RIGHT — GAME INFORMATION
+                ================================= */}
 
                 <div className="detail-info">
 
 
-                    {/* Game Tags */}
+                    {/* =================================
+                        TAGS
+                    ================================= */}
 
                     <div className="detail-tags">
 
@@ -118,23 +204,27 @@ function GameDetails() {
                     </div>
 
 
-                    {/* Game Name */}
+                    {/* =================================
+                        TITLE
+                    ================================= */}
 
                     <h1 className="detail-title">
                         {game.name}
                     </h1>
 
 
-                    {/* Game Description */}
+                    {/* =================================
+                        DESCRIPTION
+                    ================================= */}
 
                     <p className="detail-description">
                         {game.description}
                     </p>
 
 
-                    {/* =========================
-                        Gameplay Snapshots
-                    ========================= */}
+                    {/* =================================
+                        GAMEPLAY SNAPSHOTS
+                    ================================= */}
 
                     <div className="snapshot-header">
 
@@ -145,16 +235,16 @@ function GameDetails() {
                     </div>
 
 
-                    {/* =========================
-                        Preview Carousel
-                    ========================= */}
+                    {/* =================================
+                        PREVIEW CAROUSEL
+                    ================================= */}
 
                     {previews.length > 0 ? (
 
                         <div className="snapshots-window">
 
 
-                            {/* Previous Button */}
+                            {/* PREVIOUS */}
 
                             <button
                                 type="button"
@@ -166,12 +256,13 @@ function GameDetails() {
                             </button>
 
 
-                            {/* Preview Track */}
+                            {/* TRACK */}
 
                             <div
                                 className="snapshots-track"
                                 style={{
-                                    transform: `translateX(-${currentPreview * 100}%)`
+                                    transform:
+                                        `translateX(-${currentPreview * 100}%)`,
                                 }}
                             >
 
@@ -190,9 +281,6 @@ function GameDetails() {
                                                     `${game.name} gameplay preview ${index + 1}`
                                                 }
                                             />
-
-
-                                            {/* Image Overlay */}
 
                                             <div className="preview-overlay">
 
@@ -217,7 +305,7 @@ function GameDetails() {
                             </div>
 
 
-                            {/* Next Button */}
+                            {/* NEXT */}
 
                             <button
                                 type="button"
@@ -239,9 +327,9 @@ function GameDetails() {
                     )}
 
 
-                    {/* =========================
-                        Preview Dots
-                    ========================= */}
+                    {/* =================================
+                        PREVIEW DOTS
+                    ================================= */}
 
                     {previews.length > 1 && (
 
@@ -261,7 +349,9 @@ function GameDetails() {
                                         onClick={() =>
                                             setCurrentPreview(index)
                                         }
-                                        aria-label={`Go to preview ${index + 1}`}
+                                        aria-label={
+                                            `Go to preview ${index + 1}`
+                                        }
                                     />
 
                                 )
@@ -272,9 +362,9 @@ function GameDetails() {
                     )}
 
 
-                    {/* =========================
-                        Sales & Performance
-                    ========================= */}
+                    {/* =================================
+                        SALES & PERFORMANCE
+                    ================================= */}
 
                     <h2 className="detail-section-title snapshots-title">
                         SALES & PERFORMANCE
@@ -284,7 +374,7 @@ function GameDetails() {
                     <div className="info-grid">
 
 
-                        {/* Units Sold */}
+                        {/* UNITS */}
 
                         <div className="info-box">
 
@@ -299,7 +389,7 @@ function GameDetails() {
                         </div>
 
 
-                        {/* Revenue */}
+                        {/* REVENUE */}
 
                         <div className="info-box">
 
@@ -314,7 +404,7 @@ function GameDetails() {
                         </div>
 
 
-                        {/* Profit / Loss */}
+                        {/* PROFIT */}
 
                         <div className="info-box">
 
@@ -329,7 +419,7 @@ function GameDetails() {
                         </div>
 
 
-                        {/* Release Year */}
+                        {/* RELEASE */}
 
                         <div className="info-box">
 
@@ -338,7 +428,7 @@ function GameDetails() {
                             </span>
 
                             <strong>
-                                {game.releaseYear}
+                                {game.releaseYear || "N/A"}
                             </strong>
 
                         </div>
@@ -346,146 +436,315 @@ function GameDetails() {
                     </div>
 
 
-                    {/* =========================
-                        Financial Note
-                    ========================= */}
+                    {/* =================================
+                        FINANCIAL NOTE
+                    ================================= */}
 
                     <div className="stats-note">
-                        <h2 className="detail-section-title extra-section-title">
-                            GAME INFORMATION
-                        </h2>
-
-                        <div className="game-info-grid">
-
-                            <div className="game-info-box">
-                                <span>Developer</span>
-                                <strong>{game.info?.developer || "N/A"}</strong>
-                            </div>
-
-                            <div className="game-info-box">
-                                <span>Publisher</span>
-                                <strong>{game.info?.publisher || "N/A"}</strong>
-                            </div>
-
-                            <div className="game-info-box">
-                                <span>Release Date</span>
-                                <strong>{game.info?.releaseDate || "N/A"}</strong>
-                            </div>
-
-                            <div className="game-info-box">
-                                <span>Genre</span>
-                                <strong>{game.genre}</strong>
-                            </div>
-
-                            <div className="game-info-box">
-                                <span>Platforms</span>
-                                <strong>{game.info?.platforms || "N/A"}</strong>
-                            </div>
-
-                            <div className="game-info-box">
-                                <span>Game Mode</span>
-                                <strong>{game.info?.mode || "N/A"}</strong>
-                            </div>
-
-                        </div>
-                        <h2 className="detail-section-title extra-section-title">
-                            GAMEVERSE RATING
-                        </h2>
-
-                        <div className="game-rating-box">
-
-                            <div className="game-rating-score">
-                                <strong>{game.rating?.score || "N/A"}</strong>
-                                <span>/ 5</span>
-                            </div>
-
-                            <div className="game-rating-details">
-
-                                <div className="game-rating-stars">
-                                    ★★★★★
-                                </div>
-
-                                <p>
-                                    Based on {game.rating?.reviews || 0} player reviews
-                                </p>
-
-                            </div>
-
-                        </div>
-                        <h2 className="detail-section-title extra-section-title">
-                            SYSTEM REQUIREMENTS
-                        </h2>
-
-                        <div className="requirements-grid">
-
-                            <div className="requirements-box">
-
-                                <h3>MINIMUM</h3>
-
-                                <div className="requirement-row">
-                                    <span>OS</span>
-                                    <strong>{game.requirements?.minimum?.os || "N/A"}</strong>
-                                </div>
-
-                                <div className="requirement-row">
-                                    <span>Processor</span>
-                                    <strong>{game.requirements?.minimum?.processor || "N/A"}</strong>
-                                </div>
-
-                                <div className="requirement-row">
-                                    <span>Memory</span>
-                                    <strong>{game.requirements?.minimum?.memory || "N/A"}</strong>
-                                </div>
-
-                                <div className="requirement-row">
-                                    <span>Graphics</span>
-                                    <strong>{game.requirements?.minimum?.graphics || "N/A"}</strong>
-                                </div>
-
-                                <div className="requirement-row">
-                                    <span>Storage</span>
-                                    <strong>{game.requirements?.minimum?.storage || "N/A"}</strong>
-                                </div>
-
-                            </div>
-
-
-                            <div className="requirements-box">
-
-                                <h3>RECOMMENDED</h3>
-
-                                <div className="requirement-row">
-                                    <span>OS</span>
-                                    <strong>{game.requirements?.recommended?.os || "N/A"}</strong>
-                                </div>
-
-                                <div className="requirement-row">
-                                    <span>Processor</span>
-                                    <strong>{game.requirements?.recommended?.processor || "N/A"}</strong>
-                                </div>
-
-                                <div className="requirement-row">
-                                    <span>Memory</span>
-                                    <strong>{game.requirements?.recommended?.memory || "N/A"}</strong>
-                                </div>
-
-                                <div className="requirement-row">
-                                    <span>Graphics</span>
-                                    <strong>{game.requirements?.recommended?.graphics || "N/A"}</strong>
-                                </div>
-
-                                <div className="requirement-row">
-                                    <span>Storage</span>
-                                    <strong>{game.requirements?.recommended?.storage || "N/A"}</strong>
-                                </div>
-
-                            </div>
-
-                        </div> <br/>
 
                         Sales and financial figures are rounded,
                         illustrative estimates for this demo project
                         — not audited data.
+
+                    </div>
+
+
+                    {/* =================================
+                        GAME INFORMATION
+                    ================================= */}
+
+                    <h2 className="detail-section-title extra-section-title">
+                        GAME INFORMATION
+                    </h2>
+
+
+                    <div className="game-info-grid">
+
+
+                        <div className="game-info-box">
+
+                            <span>
+                                Developer
+                            </span>
+
+                            <strong>
+                                {game.info?.developer || "N/A"}
+                            </strong>
+
+                        </div>
+
+
+                        <div className="game-info-box">
+
+                            <span>
+                                Publisher
+                            </span>
+
+                            <strong>
+                                {game.info?.publisher || "N/A"}
+                            </strong>
+
+                        </div>
+
+
+                        <div className="game-info-box">
+
+                            <span>
+                                Release Date
+                            </span>
+
+                            <strong>
+                                {game.info?.releaseDate || "N/A"}
+                            </strong>
+
+                        </div>
+
+
+                        <div className="game-info-box">
+
+                            <span>
+                                Genre
+                            </span>
+
+                            <strong>
+                                {game.genre || "N/A"}
+                            </strong>
+
+                        </div>
+
+
+                        <div className="game-info-box">
+
+                            <span>
+                                Platforms
+                            </span>
+
+                            <strong>
+                                {game.info?.platforms || "N/A"}
+                            </strong>
+
+                        </div>
+
+
+                        <div className="game-info-box">
+
+                            <span>
+                                Game Mode
+                            </span>
+
+                            <strong>
+                                {game.info?.mode || "N/A"}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    {/* =================================
+                        GAMEVERSE RATING
+                    ================================= */}
+
+                    <h2 className="detail-section-title extra-section-title">
+                        GAMEVERSE RATING
+                    </h2>
+
+
+                    <div className="game-rating-box">
+
+
+                        <div className="game-rating-score">
+
+                            <strong>
+                                {game.rating?.score || "N/A"}
+                            </strong>
+
+                            <span>
+                                / 5
+                            </span>
+
+                        </div>
+
+
+                        <div className="game-rating-details">
+
+                            <div className="game-rating-stars">
+                                ★★★★★
+                            </div>
+
+                            <p>
+                                Based on{" "}
+                                {game.rating?.reviews || 0}
+                                {" "}player reviews
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    {/* =================================
+                        SYSTEM REQUIREMENTS
+                    ================================= */}
+
+                    <h2 className="detail-section-title extra-section-title">
+                        SYSTEM REQUIREMENTS
+                    </h2>
+
+
+                    <div className="requirements-grid">
+
+
+                        {/* MINIMUM */}
+
+                        <div className="requirements-box">
+
+                            <h3>
+                                MINIMUM
+                            </h3>
+
+
+                            <div className="requirement-row">
+
+                                <span>
+                                    OS
+                                </span>
+
+                                <strong>
+                                    {game.requirements?.minimum?.os || "N/A"}
+                                </strong>
+
+                            </div>
+
+
+                            <div className="requirement-row">
+
+                                <span>
+                                    Processor
+                                </span>
+
+                                <strong>
+                                    {game.requirements?.minimum?.processor || "N/A"}
+                                </strong>
+
+                            </div>
+
+
+                            <div className="requirement-row">
+
+                                <span>
+                                    Memory
+                                </span>
+
+                                <strong>
+                                    {game.requirements?.minimum?.memory || "N/A"}
+                                </strong>
+
+                            </div>
+
+
+                            <div className="requirement-row">
+
+                                <span>
+                                    Graphics
+                                </span>
+
+                                <strong>
+                                    {game.requirements?.minimum?.graphics || "N/A"}
+                                </strong>
+
+                            </div>
+
+
+                            <div className="requirement-row">
+
+                                <span>
+                                    Storage
+                                </span>
+
+                                <strong>
+                                    {game.requirements?.minimum?.storage || "N/A"}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        {/* RECOMMENDED */}
+
+                        <div className="requirements-box">
+
+                            <h3>
+                                RECOMMENDED
+                            </h3>
+
+
+                            <div className="requirement-row">
+
+                                <span>
+                                    OS
+                                </span>
+
+                                <strong>
+                                    {game.requirements?.recommended?.os || "N/A"}
+                                </strong>
+
+                            </div>
+
+
+                            <div className="requirement-row">
+
+                                <span>
+                                    Processor
+                                </span>
+
+                                <strong>
+                                    {game.requirements?.recommended?.processor || "N/A"}
+                                </strong>
+
+                            </div>
+
+
+                            <div className="requirement-row">
+
+                                <span>
+                                    Memory
+                                </span>
+
+                                <strong>
+                                    {game.requirements?.recommended?.memory || "N/A"}
+                                </strong>
+
+                            </div>
+
+
+                            <div className="requirement-row">
+
+                                <span>
+                                    Graphics
+                                </span>
+
+                                <strong>
+                                    {game.requirements?.recommended?.graphics || "N/A"}
+                                </strong>
+
+                            </div>
+
+
+                            <div className="requirement-row">
+
+                                <span>
+                                    Storage
+                                </span>
+
+                                <strong>
+                                    {game.requirements?.recommended?.storage || "N/A"}
+                                </strong>
+
+                            </div>
+
+                        </div>
 
                     </div>
 

@@ -1,12 +1,16 @@
 const express = require("express");
 
-const reviewController = require("../controllers/reviewController");
-const protect = require("../middleware/authMiddleware");
+const {
+  getGames,
+  getGameById,
+} = require("../controllers/gameController");
 
 const router = express.Router();
 
-router.get("/", reviewController.getReviews);
+// GET all games
+router.get("/", getGames);
 
-router.post("/", protect, reviewController.addReview);
+// GET one game
+router.get("/:id", getGameById);
 
 module.exports = router;
