@@ -16,7 +16,28 @@ const app = express();
 // MIDDLEWARE
 // =========================
 
-app.use(cors());
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://gameverse-five.vercel.app",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+
+      const isVercel = origin.endsWith(".vercel.app");
+
+      if (allowedOrigins.includes(origin) || isVercel) {
+        return callback(null, true);
+      }
+
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
 
 app.use(
   express.json({

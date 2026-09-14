@@ -1,16 +1,18 @@
 const express = require("express");
 
 const {
-  getGames,
-  getGameById,
-} = require("../controllers/gameController");
+    getReviews,
+    addReview,
+} = require("../controllers/reviewController");
+
+const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// GET all games
-router.get("/", getGames);
+// Public
+router.get("/", getReviews);
 
-// GET one game
-router.get("/:id", getGameById);
+// Logged-in users
+router.post("/", authMiddleware, addReview);
 
 module.exports = router;
