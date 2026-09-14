@@ -25,6 +25,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin/categories", categoryRoutes);
+app.use("/api/admin/categories", categoryRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)

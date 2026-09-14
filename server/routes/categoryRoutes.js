@@ -12,7 +12,18 @@ const protect = require("../middleware/authMiddleware");
 const router = express.Router();
 
 
-// Admin protection
+// ========================================
+// LOGGED-IN USERS
+// ========================================
+
+// View categories
+router.get("/", protect, getCategories);
+
+
+// ========================================
+// ADMIN ONLY
+// ========================================
+
 const adminOnly = (req, res, next) => {
   if (!req.user || req.user.role !== "admin") {
     return res.status(403).json({
@@ -24,15 +35,6 @@ const adminOnly = (req, res, next) => {
 };
 
 
-// Get categories
-router.get(
-  "/",
-  protect,
-  adminOnly,
-  getCategories
-);
-
-
 // Add category
 router.post(
   "/",
@@ -42,7 +44,7 @@ router.post(
 );
 
 
-// Update category
+// Edit category
 router.put(
   "/:id",
   protect,

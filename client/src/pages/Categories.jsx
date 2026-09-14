@@ -1,45 +1,73 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import API from "../services/api";
 
 function Categories() {
-  const categories = [
-    {
-      name: "Action",
-      image: "/images/action.jpg",
-    },
-    {
-      name: "Adventure",
-      image: "/images/adventure.jpg",
-    },
-    {
-      name: "RPG",
-      image: "/images/rpg.jpg",
-    },
-    {
-      name: "Racing",
-      image: "/images/racing.jpg",
-    },
-    {
-      name: "Horror",
-      image: "/images/horror.jpg",
-    },
-    {
-      name: "Shooter",
-      image: "/images/shooter.jpg",
-    },
-    {
-      name: "Open World",
-      image: "/images/openworld.jpg",
-    },
-    {
-      name: "Survival",
-      image: "/images/survival.jpg",
-    },
-  ];
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await API.get("/categories", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        setCategories(response.data);
+      } catch (error) {
+        console.log("Error loading categories:", error);
+
+        setError("Unable to load categories.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="categories-page">
+        <div className="categories-header">
+          <div className="eyebrow-line">
+            <div className="dash"></div>
+            <span>GAMEVERSE COLLECTION</span>
+          </div>
+
+          <h1>GAME CATEGORIES</h1>
+
+          <p>Loading categories...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="categories-page">
+        <div className="categories-header">
+          <div className="eyebrow-line">
+            <div className="dash"></div>
+            <span>GAMEVERSE COLLECTION</span>
+          </div>
+
+          <h1>GAME CATEGORIES</h1>
+
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="categories-page">
 
       {/* HEADER */}
+
       <div className="categories-header">
 
         <div className="eyebrow-line">
@@ -58,12 +86,13 @@ function Categories() {
 
 
       {/* CATEGORY GRID */}
+
       <div className="categories-grid">
 
         {categories.map((category, index) => (
 
           <Link
-            key={category.name}
+            key={category._id}
             to={`/categories/${category.name.toLowerCase()}`}
             className="category-card"
           >
@@ -77,14 +106,10 @@ function Categories() {
 
               <div className="category-overlay"></div>
 
-
-              {/* CATEGORY NAME */}
               <div className="category-label">
                 <span>{category.name}</span>
               </div>
 
-
-              {/* NUMBER */}
               <div className="category-number">
                 {String(index + 1).padStart(2, "0")}
               </div>
