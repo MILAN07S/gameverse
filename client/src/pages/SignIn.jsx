@@ -24,7 +24,11 @@ function SignIn() {
         JSON.stringify(response.data.user)
       );
 
-      navigate("/");
+      if (response.data.user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch (error) {
       alert(
         error.response?.data?.message ||
