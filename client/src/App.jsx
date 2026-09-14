@@ -4,6 +4,7 @@ import CategoryGames from "./pages/CategoryGames";
 import Reviews from "./pages/Reviews";
 import Footer from "./components/Footer";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
+import AdminRoute from "./components/AdminRoute";
 
 import {
   BrowserRouter,
@@ -66,7 +67,14 @@ function App() {
           element={<SignUp />}
         />
 
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
 
       </Routes>
 
