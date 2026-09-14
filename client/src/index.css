@@ -3075,3 +3075,225 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================
+   ADMIN GAME FORM
+========================= */
+
+.admin-form-card {
+  margin-bottom: 35px;
+  padding: 30px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.admin-form-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.admin-form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--gold);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.admin-form-header h2 {
+  margin: 0;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--text);
+}
+
+.admin-game-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.admin-form-section-title {
+  margin: 8px 0 -8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+
+  color: var(--gold);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.admin-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-form-field label {
+  color: var(--text-muted);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-form-field input,
+.admin-form-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 13px 14px;
+
+  background: var(--background);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.admin-form-field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.admin-form-field input:focus,
+.admin-form-field textarea:focus {
+  border-color: var(--gold);
+}
+
+.admin-form-field input::placeholder,
+.admin-form-field textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.admin-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.admin-save-button,
+.admin-cancel-button {
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.admin-save-button {
+  background: var(--gold);
+  border: 1px solid var(--gold);
+  color: #111;
+}
+
+.admin-save-button:hover {
+  opacity: 0.9;
+}
+
+.admin-save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-cancel-button {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--text-muted);
+}
+
+.admin-cancel-button:hover {
+  border-color: var(--gold);
+  color: var(--text);
+}
+
+.admin-error {
+  margin-bottom: 20px;
+  padding: 12px 15px;
+  border: 1px solid #8b3a3a;
+  border-radius: var(--radius);
+  color: #ff8d8d;
+  font-size: 13px;
+}
+
+.admin-empty {
+  padding: 45px 30px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.admin-empty h2 {
+  margin: 0 0 8px;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.admin-empty p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+  .admin-form-card {
+    padding: 20px;
+  }
+
+  .admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form-header {
+    flex-direction: column;
+  }
+
+  .admin-form-actions {
+    justify-content: stretch;
+  }
+
+  .admin-form-actions button {
+    flex: 1;
+  }
+}
+
+.admin-image-preview {
+  margin-top: 10px;
+  width: 140px;
+  height: 190px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.admin-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

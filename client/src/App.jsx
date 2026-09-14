@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminRoute from "./components/AdminRoute";
 import AdminGames from "./pages/Admin/AdminGames";
+import AdminUsers from "./pages/Admin/AdminUsers";
 
 import {
   BrowserRouter,
@@ -83,6 +84,11 @@ function App() {
               <AdminGames />
             </AdminRoute>
           }
+        />
+
+        <Route
+          path="/admin/users"
+          element={<AdminUsers />}
         />
 
       </Routes>
